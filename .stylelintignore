@@ -1,3 +1,4 @@
 **/node_modules
 *.md
 public/
+src/sass/content/
