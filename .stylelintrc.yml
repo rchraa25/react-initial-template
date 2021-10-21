@@ -1,25 +1,44 @@
 extends:
-  - stylelint-config-standard
+  - stylelint-config-sass-guidelines
   - stylelint-config-prettier
 plugins:
   - stylelint-selector-bem-pattern
   - stylelint-scss
   - stylelint-order
 rules:
-  # Wrap lines greater than 120 characters
-  max-line-length: 120
-  # Override stylelint-config-standard - we only use CSS comments for annotations that don't warrant an empty line
-  comment-empty-line-before: null
-  # Follow best practices
-  font-family-name-quotes: always-where-recommended
-  # https://stackoverflow.com/a/34383157/467582
+  #? start of stylelint-config-sass-guidelines
+  # At-rule
+  at-rule-no-vendor-prefix: true
+  #function
   function-url-quotes: always
-  # https://www.w3.org/TR/selectors/#attribute-selectors
-  # http://stackoverflow.com/q/3851091
-  selector-attribute-quotes: always
-  # Double-quotes are our convention throughout our codebase within (S)CSS. They also reflect how
-  # attribute strings are normally quoted within the DOM.
+  # general
+  max-nesting-depth: 3
+  # Media Feature
+  media-feature-name-no-vendor-prefix: true
+  #number
+  number-leading-zero: always
+  # scss
+  scss/at-function-pattern: ^rc-.+
+  scss/at-import-no-partial-leading-underscore: true
+  scss/at-mixin-pattern: ^rc-.+
+  # (note for $-vars we use a leading underscore for "private" variables)
+  scss/dollar-variable-pattern:
+    - ^_?rc-.+
+    - ignore: local
+  scss/selector-no-redundant-nesting-selector: true
+  # selector
+  selector-class-pattern:
+    - ^rc-.+
+    - resolveNestedSelectors: true
+  selector-max-compound-selectors: 4
+  selector-no-vendor-prefix: true
+  selector-no-qualifying-type: true
+  # string
   string-quotes: double
+  # value
+  value-no-vendor-prefix: true
+  #? end of stylelint-config-sass-guidelines
+  #? start of stylelint-order
   order/order:
     - - type: at-rule
         hasBlock: false
@@ -207,25 +226,16 @@ rules:
     - visibility
     - will-change
     - z-index
-  declaration-property-unit-whitelist:
-  font-size:
-    - 'rem'
-    - 'em'
-  # The following prefix rules are enabled since we use autoprefixer
-  at-rule-no-vendor-prefix: true
-  media-feature-name-no-vendor-prefix: true
-  selector-no-vendor-prefix: true
-  value-no-vendor-prefix: true
-  # Usually if you're nesting past 3 levels deep there's a problem
-  max-nesting-depth: 3
-  # Because we adhere to BEM we can limit the amount of necessary compound selectors. Most should
-  # just be 1 level selector. However, modifiers can introduce an additional compound selector.
-  # Furthermore, generic qualifying selectors (e.g. `[dir="rtl"]`) can introduce yet another level.
-  selector-max-compound-selectors: 4
-  # For specificity: disallow IDs (0). Allow for complex combinations of classes, pseudo-classes,
-  # attribute modifiers based on selector-max-compound-selectors, plus an addition for
-  # pseudo-classes (4). Allow for pseudo-elements (1).
-  selector-max-specificity: 0,4,1
+  #? end of stylelint-order
+  #? strat of stylelint-scss
+  # @-else
+  scss/at-else-closing-brace-newline-after: always-last-in-chain
+  scss/at-else-closing-brace-space-after: always-intermediate
+  scss/at-else-empty-line-before: never
+  # @-if
+  scss/at-if-closing-brace-newline-after: always-last-in-chain
+  scss/at-if-closing-brace-space-after: always-intermediate
+  # @-rule
   at-rule-no-unknown:
     - true
     - ignoreAtRules:
@@ -243,98 +253,14 @@ rules:
         - return
         - use
         - warn
-  # Disallow "@extend" in scss.
-  # http://csswizardry.com/2016/02/mixins-better-for-performance/
-  # http://vanseodesign.com/css/sass-mixin-or-extend/
-  # Besides performance, @extend actually *changes* the selector precedence by creating a compound
-  # selector, which can lead to ambiguous results.
-  at-rule-blacklist:
-    - extend
-  # Extremely useful for typos, and anything emergent can be ignored by this rule
-  property-no-unknown:
-    - true
-    - ignoreProperties:
-        - contain
-  # There is no reason that a specific ID would be needed for UI components
-  selector-max-id: 0
-  # Qualifying types are not needed when using a naming system like BEM
-  selector-no-qualifying-type: true
-  # In general, we should not be modifying elements within our components, since we can't
-  # predict the use cases in which users would add a certain type of element into a component.
-  selector-max-type:
-    - 0
-    - ignoreTypes:
-        - /fieldset/
-        - /img/
-  # Styles for components should never need the universal selector.
-  selector-max-universal: 0
-  # Ensure any defined symbols are prefixed with "brand-" OR "u-"
-  custom-media-pattern: ^tdbc-.+
-  custom-property-pattern: ^tdbc-.+
-  selector-class-pattern:
-    - ^tdbc-.+
-    - resolveNestedSelectors: true
-  selector-id-pattern: ^tdbc-.+
-  # Names are more semantic than numbers
-  font-weight-notation: named-where-possible
-  # http://www.paulirish.com/2010/the-protocol-relative-url/
-  function-url-no-scheme-relative: true
-  # TODO: and FIXME: warnings are super useful because they remind us that we should address these
-  # within our codebase
-  comment-word-blacklist:
-    - - /^TODO:/
-      - /^FIXME:/
-    - severity: warning
-  # Part of google's style guide
-  number-leading-zero: always
-  at-rule-empty-line-before:
-    - always
-    - except:
-        - blockless-after-blockless
-        - first-nested
-      ignore:
-        - after-comment
-      ignoreAtRules:
-        - else
-  declaration-empty-line-before:
-    - always
-    - except:
-        - after-declaration
-        - first-nested
-      ignore:
-        - after-comment
-  block-closing-brace-newline-after:
-    - always
-    - ignoreAtRules:
-        - if
-        - else
-  # We use Harry Roberts' BEM dialect as our preferred way to format classes.
-  # See: http://csswizardry.com/2013/01/mindbemding-getting-your-head-round-bem-syntax/
-  # See: https://github.com/postcss/postcss-bem-linter/blob/c59db3f/lib/preset-patterns.js#L39
+  #? end of stylelint-scss
+  #? start of selector-bem-pattern
   plugin/selector-bem-pattern:
-  componentName: ^[a-z]+(?:-[a-z]+)*$
-  # <namespace>-<block>__<element>*--<modifier>*[<attribute>]*
-  componentSelectors: ^\.tdbc-{componentName}(?:__[a-z]+(?:-[a-z]+)*)*(?:--[a-z]+(?:-[a-z]+)*)*(?:\[.+\])*$
-  ignoreSelectors:
-    - ^fieldset
-    - ^\[aria\-disabled=(?:.+)\]
-    - ^img
-
-  # SCSS naming patterns, just like our CSS conventions above.
-  # (note for $-vars we use a leading underscore for "private" variables)
-  scss/dollar-variable-pattern:
-    - ^_?tdbc-.+
-    - ignore: local
-  scss/at-function-pattern: ^tdbc-.+
-  scss/at-mixin-pattern: ^tdbc-.+
-  # Prevents unneeded nesting selectors
-  scss/selector-no-redundant-nesting-selector: true
-  # Since leading underscores are not needed, they can be omitted
-  scss/at-import-no-partial-leading-underscore: true
-  # Since mixins are explicit (`@include`) and parens are unnecessary for argumentless mixins, they
-  # can be omitted.
-  scss/at-else-closing-brace-newline-after: always-last-in-chain
-  scss/at-else-closing-brace-space-after: always-intermediate
-  scss/at-else-empty-line-before: never
-  scss/at-if-closing-brace-newline-after: always-last-in-chain
-  scss/at-if-closing-brace-space-after: always-intermediate
+    componentName: ^[a-z]+(?:-[a-z]+)*$
+    # <namespace>-<block>__<element>*--<modifier>*[<attribute>]*
+    componentSelectors: ^\.rc-{componentName}(?:__[a-z]+(?:-[a-z]+)*)*(?:--[a-z]+(?:-[a-z]+)*)*(?:\[.+\])*$
+    ignoreSelectors:
+      - ^fieldset
+      - ^\[aria\-disabled=(?:.+)\]
+      - ^img
+  #? end of selector-bem-pattern
